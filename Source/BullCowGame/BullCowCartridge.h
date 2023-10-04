@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <map>
 #include "CoreMinimal.h"
 #include "Console/Cartridge.h"
 #include "BullCowCartridge.generated.h"
@@ -13,15 +14,21 @@ class BULLCOWGAME_API UBullCowCartridge : public UCartridge
 
 	public:
 	virtual void BeginPlay() override;
-	virtual void OnInput(const FString& Input) override;
-
-	int32 GetLivesLeft() { return livesLeft; };
-	void ShowWelcomeMessage();
-	// Your declarations go below!
-	private:
-		FString hiddenWord = TEXT("");
-		int32 livesLeft = 0;
-		void SetHiddenWord();
-		
 	
+	// Your declarations go below!
+
+	private:
+		FString hiddenWord;
+		int32 livesLeft = 0;
+		void Initialise();
+		virtual void OnInput(const FString& Input) override;
+
+		int32 GetLivesLeft() { return livesLeft; };
+		void ShowWelcomeMessage();
+		void ShowWinCondition();
+		void PromptYouWin();
+		bool IsValidIsogram(const FString&);
+		void PromptNoValidIsogram(const FString&);
+		void PromptYouLose();
+		void ShowLivesLeft();
 };
