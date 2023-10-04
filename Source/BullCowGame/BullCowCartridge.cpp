@@ -4,12 +4,25 @@
 void UBullCowCartridge::BeginPlay() // When the game starts
 {
     Super::BeginPlay();
-    PrintLine("The Bull Cow Game");
-    PrintLine("Come on and type something!");
-
+    
+    SetHiddenWord();
+    ShowWelcomeMessage();
 }
 
 void UBullCowCartridge::OnInput(const FString& Input) // When the player hits enter
 {
-    ClearScreen();
+    if (Input == hiddenWord)
+        PrintLine(TEXT("You WIN! Congrats!"));
+}
+
+void UBullCowCartridge::SetHiddenWord()
+{
+    hiddenWord = TEXT("paint");
+}
+
+void UBullCowCartridge::ShowWelcomeMessage()
+{
+    PrintLine(TEXT("The Bull Cow Game"));
+    PrintLine(TEXT("Can You guess the Hidden Isogram? It is %d characters long."), hiddenWord.Len());
+
 }

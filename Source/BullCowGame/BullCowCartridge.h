@@ -15,7 +15,13 @@ class BULLCOWGAME_API UBullCowCartridge : public UCartridge
 	virtual void BeginPlay() override;
 	virtual void OnInput(const FString& Input) override;
 
+	int32 GetLivesLeft() { return livesLeft; };
+	void ShowWelcomeMessage();
 	// Your declarations go below!
 	private:
+		FString hiddenWord = TEXT("");
+		int32 livesLeft = 0;
+		void SetHiddenWord();
+		
 	
 };
