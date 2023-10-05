@@ -162,8 +162,11 @@ void UBullCowCartridge::SetLivesLeft()
 
 void UBullCowCartridge::CheckForPlayAgain(const FString& Input)
 {
-    if(Input != TEXT("yes"))
+    if (Input != TEXT("yes"))
+    {
+        Terminal->DeactivateTerminal();
         return;
+    }
 
     playAgainPrompted = false;
     ClearScreen();
