@@ -3,6 +3,8 @@
 #pragma once
 
 #include <map>
+#include <stdlib.h>
+#include <time.h>
 #include "CoreMinimal.h"
 #include "Console/Cartridge.h"
 #include "BullCowCartridge.generated.h"
@@ -31,4 +33,9 @@ class BULLCOWGAME_API UBullCowCartridge : public UCartridge
 		void PromptNoValidIsogram(const FString&);
 		void PromptYouLose();
 		void ShowLivesLeft();
+		void SubtractOneLife();
+		void ShowBullsAndCows(const FString&);
+		std::pair<int, int> CalculateBullsAndCows(const FString&);
+		void PickHiddenWord();
+		void SetLivesLeft();
 };

@@ -24,16 +24,22 @@ void UBullCowCartridge::OnInput(const FString& Input) // When the player hits en
         PromptYouWin();
         return;
     }
-    livesLeft--;
-    ShowLivesLeft();
+    SubtractOneLife();
+    ShowBullsAndCows(Input);
+
     if (livesLeft == 0)
+    {
         PromptYouLose();
+        return;
+    }
+    ShowLivesLeft();
+    
 }
 
 void UBullCowCartridge::Initialise()
 {
-    hiddenWord = "paint";
-    livesLeft = 5;
+    PickHiddenWord();
+    SetLivesLeft();
 }
 
 void UBullCowCartridge::ShowWelcomeMessage()
@@ -52,6 +58,7 @@ void UBullCowCartridge::PromptYouWin()
     PrintLine(TEXT("You WIN! Congrats!"));
     Initialise();
     ShowWelcomeMessage();
+    ShowWinCondition();
 }
 
 bool UBullCowCartridge::IsValidIsogram(const FString& Input)
@@ -86,6 +93,60 @@ void UBullCowCartridge::PromptYouLose()
 
 void UBullCowCartridge::ShowLivesLeft()
 {
-    PrintLine(TEXT("Yout have %d lives remaining."), livesLeft);
+    PrintLine(TEXT("You have %d lives remaining."), livesLeft);
 
+}
+
+void UBullCowCartridge::SubtractOneLife()
+{
+    livesLeft--;
+}
+
+void UBullCowCartridge::ShowBullsAndCows(const FString& Input)
+{
+    std::pair<int, int> result = CalculateBullsAndCows(Input);
+    PrintLine(TEXT("You figured out %d bulls and %d cows."), result.first, result.second);
+}
+
+std::pair<int,int> UBullCowCartridge::CalculateBullsAndCows(const FString& Input)
+{
+    int bulls = 0, cows = 0;
+
+    for (int i = 0; i < Input.Len(); i++)
+    {
+        if (Input.Mid(i, 1) == hiddenWord.Mid(i, 1))
+        {
+            cows++;
+            continue;
+        }
+        if (hiddenWord.Contains(Input.Mid(i, 1)))
+            bulls++;
+    }
+
+    return std::make_pair(bulls, cows);
+}
+
+void UBullCowCartridge::PickHiddenWord()
+{
+    FString isograms[] =
+    {
+        TEXT("hit"),
+        TEXT("bam"),
+        TEXT("put"),
+        TEXT("push"),
+        TEXT("fart"),
+        TEXT("pain"),
+        TEXT("first"),
+        TEXT("paint"),
+        TEXT("power"),
+        TEXT("polish")
+    };
+    srand(time(NULL));
+    int randomNumber = rand() % isograms->Len();
+    hiddenWord = isograms[randomNumber];
+}
+
+void UBullCowCartridge::SetLivesLeft()
+{
+    livesLeft = hiddenWord.Len();
 }
