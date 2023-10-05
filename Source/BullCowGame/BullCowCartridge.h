@@ -3,6 +3,7 @@
 #pragma once
 
 #include <map>
+#include <memory>
 #include <stdlib.h>
 #include <time.h>
 #include "CoreMinimal.h"
@@ -16,15 +17,16 @@ class BULLCOWGAME_API UBullCowCartridge : public UCartridge
 
 	public:
 	virtual void BeginPlay() override;
-	
-	// Your declarations go below!
+	UBullCowCartridge();
 
 	private:
 		FString hiddenWord;
 		int32 livesLeft = 0;
+		bool playAgainPrompted = false;
+		std::unique_ptr<FString[]> isograms;
+
 		void Initialise();
 		virtual void OnInput(const FString& Input) override;
-
 		int32 GetLivesLeft() { return livesLeft; };
 		void ShowWelcomeMessage();
 		void ShowWinCondition();
@@ -38,4 +40,6 @@ class BULLCOWGAME_API UBullCowCartridge : public UCartridge
 		std::pair<int, int> CalculateBullsAndCows(const FString&);
 		void PickHiddenWord();
 		void SetLivesLeft();
+		void CheckForPlayAgain(const FString&);
+		void PromptPlayAgain();
 };

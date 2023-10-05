@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "BullCowCartridge.h"
 
+const int ISOGRAMSSIZE = 10;
+
 void UBullCowCartridge::BeginPlay() // When the game starts
 {
     Super::BeginPlay();
@@ -11,8 +13,32 @@ void UBullCowCartridge::BeginPlay() // When the game starts
 
 }
 
+UBullCowCartridge::UBullCowCartridge()
+{
+    srand(time(NULL));
+
+    isograms = std::unique_ptr<FString[]>
+        (new FString[ISOGRAMSSIZE]{
+            TEXT("hit"),
+            TEXT("bam"),
+            TEXT("put"),
+            TEXT("push"),
+            TEXT("fart"),
+            TEXT("pain"),
+            TEXT("first"),
+            TEXT("paint"),
+            TEXT("power"),
+            TEXT("polish")
+            });
+}
+
 void UBullCowCartridge::OnInput(const FString& Input) // When the player hits enter
 {
+    if (playAgainPrompted)
+    {
+        CheckForPlayAgain(Input);
+        return;
+    }
     if (!IsValidIsogram(Input))
     {
         PromptNoValidIsogram(Input);
@@ -22,6 +48,7 @@ void UBullCowCartridge::OnInput(const FString& Input) // When the player hits en
     if (Input == hiddenWord)
     {
         PromptYouWin();
+        PromptPlayAgain();
         return;
     }
     SubtractOneLife();
@@ -30,6 +57,7 @@ void UBullCowCartridge::OnInput(const FString& Input) // When the player hits en
     if (livesLeft == 0)
     {
         PromptYouLose();
+        PromptPlayAgain();
         return;
     }
     ShowLivesLeft();
@@ -56,9 +84,6 @@ void UBullCowCartridge::ShowWinCondition()
 void UBullCowCartridge::PromptYouWin()
 {
     PrintLine(TEXT("You WIN! Congrats!"));
-    Initialise();
-    ShowWelcomeMessage();
-    ShowWinCondition();
 }
 
 bool UBullCowCartridge::IsValidIsogram(const FString& Input)
@@ -87,8 +112,6 @@ void UBullCowCartridge::PromptYouLose()
 {
     PrintLine(TEXT("Unfortunately you ran out of lives."));
     PrintLine(TEXT("The Hidden word was: %s"), *hiddenWord);
-    Initialise();
-    ShowWinCondition();
 }
 
 void UBullCowCartridge::ShowLivesLeft()
@@ -127,26 +150,29 @@ std::pair<int,int> UBullCowCartridge::CalculateBullsAndCows(const FString& Input
 }
 
 void UBullCowCartridge::PickHiddenWord()
-{
-    FString isograms[] =
-    {
-        TEXT("hit"),
-        TEXT("bam"),
-        TEXT("put"),
-        TEXT("push"),
-        TEXT("fart"),
-        TEXT("pain"),
-        TEXT("first"),
-        TEXT("paint"),
-        TEXT("power"),
-        TEXT("polish")
-    };
-    srand(time(NULL));
-    int randomNumber = rand() % isograms->Len();
+{ 
+    int randomNumber = rand() % ISOGRAMSSIZE;
     hiddenWord = isograms[randomNumber];
 }
 
 void UBullCowCartridge::SetLivesLeft()
 {
     livesLeft = hiddenWord.Len();
+}
+
+void UBullCowCartridge::CheckForPlayAgain(const FString& Input)
+{
+    if(Input != TEXT("yes"))
+        return;
+
+    playAgainPrompted = false;
+    ClearScreen();
+    Initialise();
+    ShowWinCondition();
+}
+
+void UBullCowCartridge::PromptPlayAgain()
+{
+    PrintLine(TEXT("Do you want to Play again? (Yes/No)"));
+    playAgainPrompted = true;
 }
