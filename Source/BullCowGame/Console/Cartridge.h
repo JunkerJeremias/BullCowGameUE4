@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Terminal.h"
 #include "Cartridge.generated.h"
 
 
@@ -24,6 +25,6 @@ protected:
 		PrintLine(FString::Printf(Fmt, Args...));
 	}
 	void ClearScreen() const;
-private:
-	class UTerminal* Terminal;
+protected:
+	UTerminal* Terminal;
 };
