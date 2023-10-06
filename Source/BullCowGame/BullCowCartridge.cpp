@@ -92,11 +92,13 @@ bool UBullCowCartridge::IsValidIsogram(const FString& Input)
         return false;
     if (Input.Contains(" "))
         return false;
+    std::set<TCHAR> mySet;
 
     for (int i = 0; i< Input.Len(); i++)
     {
-        if (Input.Right(Input.Len()-i-1).Contains(Input.Mid(i,1)))
+        if (mySet.count(Input[i]) > 0)
             return false;
+        mySet.insert(Input[i]);
     }
     return true;
 }
@@ -137,12 +139,12 @@ std::pair<int,int> UBullCowCartridge::CalculateBullsAndCows(const FString& Input
 
     for (int i = 0; i < Input.Len(); i++)
     {
-        if (Input.Mid(i, 1) == hiddenWord.Mid(i, 1))
+        if (Input[i] == hiddenWord[i])
         {
             cows++;
             continue;
         }
-        if (hiddenWord.Contains(Input.Mid(i, 1)))
+        if (hiddenWord.Contains(Input.Mid(i,1)))
             bulls++;
     }
 
@@ -163,10 +165,7 @@ void UBullCowCartridge::SetLivesLeft()
 void UBullCowCartridge::CheckForPlayAgain(const FString& Input)
 {
     if (Input != TEXT("yes"))
-    {
-        Terminal->DeactivateTerminal();
         return;
-    }
 
     playAgainPrompted = false;
     ClearScreen();
